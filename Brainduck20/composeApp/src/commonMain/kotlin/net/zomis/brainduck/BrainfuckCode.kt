@@ -4,6 +4,6 @@ import net.zomis.brainduck.ast.SyntaxData
 
 class BrainfuckCode(val syntax: SyntaxData.Root) {
     fun createProgram(): BrainfuckProgram {
-        TODO("Not yet implemented")
+        return BrainfuckProgram(this, LimitedMemory(0..30_000))
     }
 }

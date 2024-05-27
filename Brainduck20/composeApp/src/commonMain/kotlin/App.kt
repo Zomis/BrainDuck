@@ -15,6 +15,8 @@ import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import kotlinx.coroutines.launch
 import net.zomis.brainduck.Brainfuck
+import net.zomis.brainduck.BrainfuckInput
+import net.zomis.brainduck.BrainfuckOutput
 import net.zomis.brainduck.BrainfuckProgram
 import net.zomis.brainduck.compose.BrainduckViewModel
 import net.zomis.brainduck.compose.MemoryCell
@@ -34,7 +36,7 @@ fun App(viewModel: BrainduckViewModel) {
                             Brainfuck.tokenize(viewModel.editorState.annotatedString.text)
                                 .parse()
                                 .createProgram()
-                                .run(UntilEnd)
+                                .run(UntilEnd, BrainfuckInput.NoInput, BrainfuckOutput.SystemOut)
                         }
                     }
                 }
