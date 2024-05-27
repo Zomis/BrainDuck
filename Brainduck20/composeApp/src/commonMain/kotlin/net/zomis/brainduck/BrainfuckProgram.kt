@@ -1,10 +1,9 @@
 package net.zomis.brainduck
 
-import net.zomis.brainduck.ast.Syntax
 import net.zomis.brainduck.runner.Runner
 
 class BrainfuckProgram(
-    val code: List<Syntax>,
+    val code: BrainfuckCode,
     val memory: BrainfuckMemory,
 ) {
     val codePosition: List<Int> = emptyList()

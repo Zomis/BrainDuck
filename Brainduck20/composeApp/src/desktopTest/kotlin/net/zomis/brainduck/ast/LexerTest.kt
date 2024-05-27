@@ -1,3 +1,5 @@
+package net.zomis.brainduck.ast
+
 import com.google.common.truth.Truth
 import net.zomis.brainduck.Brainfuck
 import org.junit.Test

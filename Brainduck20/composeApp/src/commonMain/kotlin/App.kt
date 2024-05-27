@@ -33,6 +33,7 @@ fun App(viewModel: BrainduckViewModel) {
                         viewModel.coroutineScope.launch {
                             Brainfuck.tokenize(viewModel.editorState.annotatedString.text)
                                 .parse()
+                                .createProgram()
                                 .run(UntilEnd)
                         }
                     }

@@ -16,5 +16,6 @@ sealed interface SyntaxData {
     data class WhileNotZero(val children: List<Syntax>) : SyntaxData
     data object Comment : SyntaxData
     data object Advanced : SyntaxData
+    data class Root(val children: List<Syntax>) : SyntaxData
 
 }
