@@ -13,8 +13,12 @@ import brainduck.composeapp.generated.resources.Res
 import brainduck.composeapp.generated.resources.compose_multiplatform
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
+import kotlinx.coroutines.launch
+import net.zomis.brainduck.Brainfuck
+import net.zomis.brainduck.BrainfuckProgram
 import net.zomis.brainduck.compose.BrainduckViewModel
 import net.zomis.brainduck.compose.MemoryCell
+import net.zomis.brainduck.runner.UntilEnd
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -24,20 +28,26 @@ fun App(viewModel: BrainduckViewModel) {
     MaterialTheme {
         Column(modifier = Modifier.fillMaxWidth().onKeyEvent {
             if (it.type == KeyEventType.KeyUp) {
-                println(it.key == Key.F9)
+                when (it.key) {
+                    Key.F9 -> {
+                        viewModel.coroutineScope.launch {
+                            Brainfuck.tokenize(viewModel.editorState.annotatedString.text)
+                                .parse()
+                                .run(UntilEnd)
+                        }
+                    }
+                }
             }
             false
         }, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier.fillMaxWidth().height(48.dp)) {
                 Icon(painterResource(Res.drawable.compose_multiplatform), "", modifier = Modifier.size(48.dp))
-                Text("Toolbar")
             }
 
             val focus = remember { FocusRequester() }
             LaunchedEffect(Unit) {
                 focus.requestFocus()
             }
-            rememberRichTextState()
 
             Row(modifier = Modifier.fillMaxWidth().height(300.dp)) {
                 LazyColumn(modifier = Modifier.fillMaxWidth(0.3f).fillMaxHeight()) {

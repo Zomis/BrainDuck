@@ -40,7 +40,8 @@ kotlin {
     
     sourceSets {
         val desktopMain by getting
-        
+        val desktopTest by getting
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -56,6 +57,18 @@ kotlin {
             implementation(libs.richeditor.compose)
         }
         desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.truth)
+
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+        }
+
+        desktopTest.dependencies {
             implementation(compose.desktop.currentOs)
         }
     }

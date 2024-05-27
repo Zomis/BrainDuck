@@ -5,8 +5,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontFamily
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class BrainduckViewModel(val editorState: RichTextState) {
+    val coroutineScope = CoroutineScope(Dispatchers.Default)
     val input: MutableState<String> = mutableStateOf("")
     val output: State<String> = mutableStateOf("")
     val memory = (0..65535).map { MemoryCellImpl(it) }
