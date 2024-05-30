@@ -6,6 +6,7 @@ interface BrainfuckMemory {
     fun move(offset: Int)
     fun currentValue(): Int
     fun changeValue(offset: Int)
+    fun set(value: Int)
 }
 
 class LimitedMemory(range: IntRange) : BrainfuckMemory {
@@ -14,7 +15,7 @@ class LimitedMemory(range: IntRange) : BrainfuckMemory {
     private val values = IntArray(range.count())
 
     override fun move(offset: Int) {
-        require(offset + currentIndex in indices)
+        require(offset + currentIndex in indices) { "OutOfBounds: $currentIndex + $offset is not within $indices" }
         currentIndex += offset
     }
 
@@ -22,6 +23,10 @@ class LimitedMemory(range: IntRange) : BrainfuckMemory {
 
     override fun changeValue(offset: Int) {
         values[currentIndex] += offset
+    }
+
+    override fun set(value: Int) {
+        values[currentIndex] = value
     }
 
 }

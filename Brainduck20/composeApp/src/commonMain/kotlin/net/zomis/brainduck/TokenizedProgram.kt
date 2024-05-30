@@ -37,7 +37,8 @@ class TokenizedProgram(val tokens: List<Token>) {
                     val popped = depthStack.removeLast()
                     syntaxes = depthStack.last().syntaxes
                     val tokens = listOf(popped.startToken) + popped.syntaxes.flatMap { it.info.tokens } + token
-                    syntaxes.add(Syntax(SyntaxInfo(tokens.filterNotNull()), SyntaxData.WhileNotZero(popped.syntaxes)))
+                    val endWhile = Syntax(syntaxInfo, SyntaxData.EndWhile)
+                    syntaxes.add(Syntax(SyntaxInfo(tokens.filterNotNull()), SyntaxData.WhileNotZero(popped.syntaxes + endWhile)))
                 }
                 TokenData.Read -> syntaxes.add(Syntax(syntaxInfo, SyntaxData.Read))
                 TokenData.Write -> syntaxes.add(Syntax(syntaxInfo, SyntaxData.Write))

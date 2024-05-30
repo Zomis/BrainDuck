@@ -12,7 +12,7 @@ object UntilEnd : Runner {
         listeners: List<BrainfuckListener>
     ) {
         while (!program.isFinished()) {
-            program.runSyntax()
+            program.runSyntax(input, output, listeners)
         }
     }
 }

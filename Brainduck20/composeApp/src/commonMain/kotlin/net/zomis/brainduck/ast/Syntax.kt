@@ -14,6 +14,7 @@ sealed interface SyntaxData {
     data class Move(override val delta: Int) : SyntaxData, SteppableSyntax
     data class ChangeValue(override val delta: Int) : SyntaxData, SteppableSyntax
     data class WhileNotZero(val children: List<Syntax>) : SyntaxData
+    data object EndWhile : SyntaxData
     data object Comment : SyntaxData
     data object Advanced : SyntaxData
     data class Root(val children: List<Syntax>) : SyntaxData
