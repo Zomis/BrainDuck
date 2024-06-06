@@ -71,6 +71,8 @@ kotlin {
 
         desktopTest.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(libs.junit.jupiter.api)
+            runtimeOnly(libs.junit.jupiter.engine)
         }
     }
 }
@@ -122,4 +124,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
