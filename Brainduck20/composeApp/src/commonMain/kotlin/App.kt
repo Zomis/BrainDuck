@@ -11,15 +11,13 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.unit.dp
 import brainduck.composeapp.generated.resources.Res
 import brainduck.composeapp.generated.resources.compose_multiplatform
-import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import kotlinx.coroutines.launch
 import net.zomis.brainduck.Brainfuck
 import net.zomis.brainduck.BrainfuckInput
 import net.zomis.brainduck.BrainfuckOutput
-import net.zomis.brainduck.BrainfuckProgram
 import net.zomis.brainduck.compose.BrainduckViewModel
-import net.zomis.brainduck.compose.MemoryCell
+import net.zomis.brainduck.compose.MemoryCellViewModel
 import net.zomis.brainduck.runner.UntilEnd
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -68,7 +66,7 @@ fun App(viewModel: BrainduckViewModel) {
 }
 
 @Composable
-fun MemoryCellView(memoryCell: MemoryCell) {
+fun MemoryCellView(memoryCell: MemoryCellViewModel) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(memoryCell.address.toString(), modifier = Modifier.fillMaxWidth(0.5f))
         Text(memoryCell.value.value.toString(), modifier = Modifier.fillMaxWidth(0.5f))

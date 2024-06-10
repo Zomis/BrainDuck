@@ -2,6 +2,9 @@ package net.zomis.brainduck.runner
 
 import com.google.common.truth.Truth
 import net.zomis.brainduck.*
+import net.zomis.brainduck.analyze.AnalyzeResult
+import net.zomis.brainduck.analyze.BrainfuckAnalyzer
+import net.zomis.brainduck.analyzers.CommandCount
 import org.junit.jupiter.api.DynamicContainer
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest
@@ -50,6 +53,13 @@ class TestBuilder {
                 BrainfuckInput.StringInput(filename.readFileResource())
             }.apply(block).tests
             tests.add(DynamicContainer.dynamicContainer("using input from file $filename", nested))
+        }
+
+        fun <R, C> analysis(analyzer: BrainfuckAnalyzer<R, C>, function: AnalyzeResult<R, C>.() -> Unit) {
+            tests.add(DynamicTest.dynamicTest("analyze using $analyzer") {
+                val result = code.createProgram().analyze(input.invoke(), BrainfuckOutput.NoOutput, listOf(analyzer))
+                function.invoke(result.first() as AnalyzeResult<R, C>)
+            })
         }
     }
 

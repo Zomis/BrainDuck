@@ -1,6 +1,9 @@
 package net.zomis.brainduck
 
 fun interface BrainfuckOutput {
+    object NoOutput : BrainfuckOutput {
+        override fun write(value: Int) {}
+    }
     object SystemOut : BrainfuckOutput {
         override fun write(value: Int) {
             print(value.toChar())

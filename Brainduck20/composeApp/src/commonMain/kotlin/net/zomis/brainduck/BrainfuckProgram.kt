@@ -1,14 +1,18 @@
 package net.zomis.brainduck
 
+import net.zomis.brainduck.analyze.AnalyzeResult
+import net.zomis.brainduck.analyze.BrainfuckAnalyzer
+import net.zomis.brainduck.analyze.BrainfuckRuntime
 import net.zomis.brainduck.ast.Syntax
 import net.zomis.brainduck.ast.SyntaxData
 import net.zomis.brainduck.runner.BrainfuckListener
 import net.zomis.brainduck.runner.Runner
+import net.zomis.brainduck.runner.UntilEnd
 
 class BrainfuckProgram(
-    val code: BrainfuckCode,
-    val memory: BrainfuckMemory,
-) {
+    override val code: BrainfuckCode,
+    override val memory: BrainfuckMemory,
+) : BrainfuckRuntime {
     private class SyntaxPosition(val syntax: List<Syntax>) {
         private var position = 0
         fun isFinished() = syntax.size == position
@@ -33,9 +37,13 @@ class BrainfuckProgram(
     fun isFinished(): Boolean = syntaxStack.singleOrNull()?.isFinished() == true
 
     fun runSyntax(input: BrainfuckInput, output: BrainfuckOutput, listeners: List<BrainfuckListener>) {
-        val data = syntaxStack.last().current().data
+        val syntax = syntaxStack.last().current()
+        listeners.forEach {
+            it.before(syntax, this)
+        }
+        val data = syntax.data
         when (data) {
-            SyntaxData.Advanced -> TODO()
+            is SyntaxData.Advanced -> TODO()
             is SyntaxData.ChangeValue -> memory.changeValue(data.delta)
             SyntaxData.Comment -> {}
             is SyntaxData.Move -> memory.move(data.delta)
@@ -59,10 +67,44 @@ class BrainfuckProgram(
             }
         }
         if (data !is SyntaxData.EndWhile && data !is SyntaxData.WhileNotZero) nextSyntax()
+        listeners.forEach {
+            it.after(syntax, this)
+        }
     }
 
     private fun nextSyntax() {
         syntaxStack.last().next()
+    }
+
+    fun analyze(input: BrainfuckInput, output: BrainfuckOutput, analyzers: List<BrainfuckAnalyzer<*, *>>): List<AnalyzeResult<*, *>> {
+        analyzers.forEach { it.beforeStart(this) }
+        val adapters = analyzers.map { AnalyzeAdapter(it) }
+        run(UntilEnd, input, output, adapters)
+        analyzers.forEach { it.after(this) }
+        return adapters.map { it.createResult() }
+    }
+
+    private class AnalyzeAdapter<R, C>(val analyzer: BrainfuckAnalyzer<R, C>) : BrainfuckListener {
+        private val cells = mutableMapOf<Int, C?>()
+
+        override fun before(syntax: Syntax, runtime: BrainfuckRuntime) {
+            val index = runtime.memory.currentIndex
+            val cell = cells[index]
+            val result = analyzer.beforePerform(cell, runtime, syntax)
+            if (result != cell) cells[index] = result
+        }
+
+        override fun after(syntax: Syntax, runtime: BrainfuckRuntime) {
+            val index = runtime.memory.currentIndex
+            val cell = cells[index]
+            val result = analyzer.afterPerform(cell, runtime, syntax)
+            if (result != cell) cells[index] = result
+        }
+
+        fun createResult(): AnalyzeResult<R?, C> {
+            return AnalyzeResult(analyzer.result(), cells)
+        }
+
     }
 
 }
