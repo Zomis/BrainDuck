@@ -8,7 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.unit.dp
+import brainduck.composeapp.generated.resources.*
+import brainduck.composeapp.generated.resources.Monospace
+import brainduck.composeapp.generated.resources.MonospaceBold
 import brainduck.composeapp.generated.resources.Res
 import brainduck.composeapp.generated.resources.compose_multiplatform
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
@@ -19,12 +26,29 @@ import net.zomis.brainduck.BrainfuckOutput
 import net.zomis.brainduck.compose.BrainduckViewModel
 import net.zomis.brainduck.compose.MemoryCellViewModel
 import net.zomis.brainduck.runner.UntilEnd
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
 fun App(viewModel: BrainduckViewModel) {
+    var font: FontFamily? by remember {
+        mutableStateOf(null)
+    }
+    LaunchedEffect(Unit) {
+        font = FontFamily(
+//            Font(Res.font.Monospace, weight = FontWeight.Normal),
+//            Font(Res.font.MonospaceBold, weight = FontWeight.Bold),
+//            Font(Res.font.MonospaceOblique, weight = FontWeight.Normal, style = FontStyle.Italic),
+            Font(identity = "Monospace", data = Res.readBytes("font/Monospace.ttf"), weight = FontWeight.Normal),
+            Font(identity = "MonospaceBold", data = Res.readBytes("font/MonospaceBold.ttf"), weight = FontWeight.Bold),
+            Font(identity = "MonospaceOblique", data = Res.readBytes("font/MonospaceOblique.ttf"), weight = FontWeight.Normal, style = FontStyle.Italic),
+        )
+        viewModel.init(font!!)
+    }
+
     MaterialTheme {
         Column(modifier = Modifier.fillMaxWidth().onKeyEvent {
             if (it.type == KeyEventType.KeyUp) {

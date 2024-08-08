@@ -14,8 +14,11 @@ class BrainduckViewModel(val editorState: RichTextState) {
     val output: State<String> = mutableStateOf("")
     val memory = (0..65535).map { MemoryCellImpl(it) }
 
-    init {
-        editorState.toggleSpanStyle(SpanStyle(fontFamily = FontFamily.Monospace))
+    lateinit var font: FontFamily
+
+    fun init(font: FontFamily) {
+        this.font = font
+        editorState.toggleSpanStyle(SpanStyle(fontFamily = font))
         editorState.setText("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+.+..")
     }
 }
